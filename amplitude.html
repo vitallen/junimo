@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <link rel=""stylesheet href="https://fonts.googleapis.com">
+    <title>Amplitude</title>
+    <script src="https://cdn.amplitude.com/script/8d4507cc6d4071763d7b511737eca2f2.js"></script><script>window.amplitude.add(window.sessionReplay.plugin({sampleRate: 1}));window.amplitude.init('8d4507cc6d4071763d7b511737eca2f2', {"fetchRemoteConfig":true,"autocapture":{"attribution":true,"fileDownloads":true,"formInteractions":true,"pageViews":true,"sessions":true,"elementInteractions":true,"networkTracking":true,"webVitals":true,"frustrationInteractions":true}});</script>
+</head>
+<body>
+    <h1>Login Form</h1>
+    <form id="login-form">
+        <label for="email">Email:</label>
+        <input type="email" id="email" required />
+        <button type="submit">Log In</button>
+    </form>
+    
+  <script type="module">
+    import * as amplitude from '@amplitude/analytics-browser';
+    import { Identify } from '@amplitude/analytics-browser';
+
+    // Initialize Amplitude
+    amplitude.init('8d4507cc6d4071763d7b511737eca2f2');
+
+    // Define the onUserLogin function
+    function onUserLogin(user) {
+      amplitude.setUserId(user.id);
+      const identify = new Identify().set('email', user.email);
+      amplitude.identify(identify);
+      amplitude.track('User Logged In', { email: user.email });
+      console.log('Amplitude login event sent for', user.email);
+    }
+
+    // Handle form submission
+    const form = document.getElementById('login-form');
+    form.addEventListener('submit', (event) => {
+      event.preventDefault();
+      const email = document.getElementById('email').value;
+
+      // In a real app, you'd look up or generate the user ID
+      const user = {
+        id: 'user_' + Math.floor(Math.random() * 10000),
+        email: email,
+      };
+
+      onUserLogin(user);
+      alert(`Logged in as ${email}!`);
+    });
+  </script>
+
+    
+</body>
+</html>

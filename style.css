@@ -1,0 +1,82 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+* {
+  padding: 0;
+  margin: 0;
+  box-sizing: border-box;
+  font-family: 'Poppins', sans-serif;
+}
+
+/* Navigation */
+
+/* NAVBAR UL */
+ul {
+  list-style: none;
+  background: #8438ff;
+  display: flex;                /* horizontal layout */
+  align-items: center;          /* vertical centering */
+  justify-content: space-between;
+  padding: 0 20px;
+  height: 70px;                 /* consistent bar height */
+}
+
+/* NAV LINKS on the LEFT */
+ul li {
+  position: relative;
+}
+
+ul li a {
+  display: block;
+  padding: 16px 20px;
+  color: white;
+  text-decoration: none;
+  font-size: 18px;
+  font-weight: 600;
+  line-height: 1;
+}
+
+ul li a:hover {
+  background: #a538ff;
+  height: 70px;
+}
+
+/* DROPDOWNS */
+ul li ul.dropdown {
+  background: #8438ff;
+  position: absolute;
+  left: 0;
+  top: 100%;
+  z-index: 999;
+  display: none;
+  min-width: 200px;
+}
+
+ul li ul.dropdown li {
+  display: block;
+}
+
+ul li:hover ul.dropdown {
+  display: block;
+}
+
+/* LOGO ON THE RIGHT */
+ul li.logo {
+  margin-left: auto;           /* pushes logo to the far right */
+  display: flex;
+  align-items: center;
+}
+
+ul li.logo img {
+  height: 40px;
+  width: auto;
+  display: block;
+  object-fit: contain;
+}
+
+/* Login form */
+h1 {
+    margin-left: 20px;
+}
+.form {
+    margin-left: 20px;
+}

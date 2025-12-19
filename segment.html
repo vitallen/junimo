@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Segment SDK Local Test</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Config (uses window.SEGMENT_CONFIG.writeKey) -->
+  <script src="./config.js"></script>
+
+  <!-- Segment snippet -->
+  <script>
+    // Segment snippet (guarded so a missing config doesn't break the page)
+    !function(){var i="analytics",analytics=window[i]=window[i]||[];if(!analytics.initialize)if(analytics.invoked)window.console&&console.error&&console.error("Segment snippet included twice.");else{analytics.invoked=!0;analytics.methods=["trackSubmit","trackClick","trackLink","trackForm","pageview","identify","reset","group","track","ready","alias","debug","page","screen","once","off","on","addSourceMiddleware","addIntegrationMiddleware","setAnonymousId","addDestinationMiddleware","register"];analytics.factory=function(e){return function(){if(window[i].initialized)return window[i][e].apply(window[i],arguments);var n=Array.prototype.slice.call(arguments);if(["track","screen","alias","group","page","identify"].indexOf(e)>-1){var c=document.querySelector("link[rel='canonical']");n.push({__t:"bpc",c:c&&c.getAttribute("href")||void 0,p:location.pathname,u:location.href,s:location.search,t:document.title,r:document.referrer})}n.unshift(e);analytics.push(n);return analytics}};for(var n=0;n<analytics.methods.length;n++){var key=analytics.methods[n];analytics[key]=analytics.factory(key)}analytics.load=function(key,n){var t=document.createElement("script");t.type="text/javascript";t.async=!0;t.setAttribute("data-global-segment-analytics-key",i);t.src="https://cdn.segment.com/analytics.js/v1/" + key + "/analytics.min.js";var r=document.getElementsByTagName("script")[0];r.parentNode.insertBefore(t,r);analytics._loadOptions=n};analytics.SNIPPET_VERSION="5.2.0";
+      try {
+        var writeKey = (window.SEGMENT_CONFIG && window.SEGMENT_CONFIG.writeKey) || null;
+        if (!writeKey) {
+          console.warn('[Segment] Missing write key in config.js. Calls will be queued but not delivered.');
+        } else {
+          analytics.load(writeKey);
+        }
+      } catch (e) {
+        console.error('[Segment] load error', e);
+      }
+    }}();
+  </script>
+
+  <style>
+    .stack { display: grid; gap: 12px; max-width: 720px; }
+    .row { display: grid; grid-template-columns: 160px 1fr; gap: 8px; align-items: center; }
+    input, button { padding: 10px; }
+    .btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    #result { margin-top: 12px; }
+    /* Click order UI */
+    .order-wrap { background: #fafafa; border: 1px solid #eee; padding: 12px; border-radius: 10px; }
+    .order-list { display: flex; flex-wrap: wrap; gap: 8px; }
+    .pill { border: 1px solid #ddd; border-radius: 999px; padding: 6px 10px; font-size: 0.9rem; }
+    .pill small { opacity: 0.65; margin-right: 6px; }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mixpanel.html">Mixpanel</a></li>
+      <li><a href="segment.html">Segment</a></li>
+      <li><a href="analyticsapi.html">Analytics API</a></li>
+      <li class="logo"><img src="vital_logo.png" alt="Vital logo" /></li>
+    </ul>
+  </nav>
+
+  <h1>Segment Playground</h1>
+
+  <main class="form" style="margin-top: 1.5rem;">
+    <div class="stack">
+      <div class="row">
+        <label for="account-id">Account ID</label>
+        <input id="account-id" type="text" placeholder="e.g. acct_123" />
+      </div>
+      <div class="row">
+        <label for="user-id">User ID</label>
+        <input id="user-id" type="text" placeholder="e.g. user_456" />
+      </div>
+      <div class="row">
+        <label for="event-prop">Event Property</label>
+        <input id="event-prop" type="text" placeholder="e.g. plan = pro" />
+      </div>
+
+      <div class="btns">
+        <button id="btn-group" type="button">Group</button>
+        <button id="btn-identify" type="button">Identify</button>
+        <button id="btn-track" type="button">Track</button>
+        <button id="btn-refresh" type="button" title="Clear click order indicator">Refresh</button>
+      </div>
+
+      <!-- Click order indicator -->
+      <div class="order-wrap">
+        <strong>Click order (most recent session)</strong>
+        <div id="click-order" class="order-list" aria-live="polite"></div>
+      </div>
+
+      <pre id="result"></pre>
+    </div>
+  </main>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const out = (msg, obj) => {
+      const stamp = new Date().toISOString();
+      const details = obj ? "" + JSON.stringify(obj, null, 2) : "";
+      $("result").textContent = `[${stamp}] ${msg}${details}`;
+    };
+
+    // --- Click order indicator state ---
+    let clickOrder = [];
+    function addToOrder(label) {
+      clickOrder.push({ label, ts: new Date().toLocaleTimeString() });
+      renderOrder();
+    }
+    function renderOrder() {
+      const root = $("click-order");
+      if (!clickOrder.length) { root.innerHTML = '<em>No clicks yet</em>'; return; }
+      root.innerHTML = clickOrder
+        .map((item, idx) => `<span class="pill"><small>${idx + 1}</small>${item.label} • ${item.ts}</span>`)
+        .join("");
+    }
+    function clearOrder() {
+      clickOrder = [];
+      renderOrder();
+      out("🔄 Cleared click order indicator");
+    }
+
+    // --- Utilities ---
+    function safeCall(label, fn) {
+      try { fn && fn(); }
+      catch (e) { out(`❌ ${label} error`, { error: String(e) }); }
+    }
+
+    // --- Button handlers ---
+    // Group Call
+    $("btn-group").onclick = function () {
+      addToOrder("Group");
+      const accountId = $("account-id").value.trim();
+      if (!accountId) { out("⚠️ Missing Account ID — not sending analytics.group"); return; }
+      safeCall('analytics.group', () => analytics.group(accountId, {
+        name: `Account ${accountId}`,
+        source: "segment.html",
+      }));
+      out("✅ Sent analytics.group", { accountId });
+    };
+
+    // Identify Call
+    $("btn-identify").onclick = function () {
+      addToOrder("Identify");
+      const userId = $("user-id").value.trim();
+      const accountId = $("account-id").value.trim();
+      if (!userId) { out("⚠️ Missing User ID — not sending analytics.identify"); return; }
+      const traits = { role: "developer", source: "segment.html" };
+      if (accountId) traits.accountId = accountId; // include if provided
+      safeCall('analytics.identify', () => analytics.identify(userId, traits));
+      out("✅ Sent analytics.identify", { userId, accountId: traits.accountId || null });
+    };
+
+    // Track Call
+    $("btn-track").onclick = function () {
+      addToOrder("Track");
+      const userId = $("user-id").value.trim();
+      const accountId = $("account-id").value.trim();
+      const prop = $("event-prop").value.trim();
+      safeCall('analytics.track', () => analytics.track("Dev Event", {
+        prop,
+        accountId: accountId || undefined,
+        userId: userId || undefined,
+        source: "segment.html",
+      }));
+      out("✅ Sent analytics.track('Dev Event')", { userId: userId || null, accountId: accountId || null, prop: prop || null });
+    };
+
+    // Refresh/Clear indicator
+    $("btn-refresh").onclick = clearOrder;
+
+    // Initial render
+    renderOrder();
+  </script>
+</body>
+</html>
