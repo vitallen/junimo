@@ -204,6 +204,30 @@
         "Signup Date": new Date().toISOString()
       });
 
+      // Vitally Identify + NPS
+      Vitally.account({
+        accountId: accountExternalId,
+        traits: {
+          name: accountName
+        },
+      });
+
+      Vitally.user({
+        userId,
+        accountId: accountExternalId,
+        traits: {
+          name,
+          email //,
+          // any extra traits you want
+        },
+      });
+
+      // Show NPS ONLY after the click / identification
+      Vitally.nps("show", {
+        productName: "Vital",
+        delay: 1000, // show immediately (or set a smaller delay if you want)
+      });
+
       document.getElementById("identify-status").textContent =
         `✅ Identified user "${userId}" at ${accountName}`;
     } 
@@ -216,8 +240,8 @@
     !function(n,t,i){for(var o=n[t]=n[t]||[],r=function(i){o[i]=o[i]||function(){for(var n=[],t=0;t<arguments.length;t++)n[t]=arguments[t];return o.push([i,n])}},a=0,u=["init","user","account","organization","track","nps"];a<u.length;a++){r(u[a])}}(window,"Vitally");
     Vitally.init('ZXlKaGJHY2lPaUpJVXpJMU5pSXNJblI1Y0NJNklrcFhWQ0o5LmV5SmhkV1FpT2lKaU16TXhOVE5pT0MxaU5UWTNMVFJtTnpFdFlXTTNZaTB6T0dVMk5ESTFaV1JrTldNaUxDSmhjR2tpT2lJMU56WTROalk0TnkweFlqUmtMVFJtWm1RdE9UQTBaQzAzWkdNMk0yWXlaakJoTW1FaUxDSnpaV01pT2lJellUSmxZakF5TkNKOS5keGJNTmsxa0FWejZNMnRON3NYaU1XOGlDaDdEOEZpMHpiVTFWLWNIcV9BOg==','https://sa-integrations-demo.api.vitally.io/analytics/v1');
   </script>
-
-  <!-- test without identifying the account -->
+  <!--
+  // test without identifying the account
   <script>
   Vitally.user({
     userId: '674474321440525960', // A unique ID assigned by your codebase to each user (i.e. a database ID)
@@ -238,6 +262,6 @@
     delay: 5000 // Optional - we'll default to a 5000ms (5 second) delay if the user is suppose to be displayed the survey. Increase or decrease based on the desired user experience.
 
   });
-  </script>
+  </script> -->
 </body>
 </html>
