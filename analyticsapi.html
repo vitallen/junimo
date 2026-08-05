@@ -1,0 +1,301 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Vitally Analytics API (vitally-js) Playground</title>
+  <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet" />
+
+  <!-- Config (uses CONFIG.VITALLY_API_KEY) -->
+  <script src="./config.js"></script>
+
+  <!-- Vitally SDK -->
+  <script type="text/javascript" src="https://cdn.vitally.io/vitally.js/v1/vitally.js" defer></script>
+  <script type="text/javascript">
+    !function(n,t,i){for(var o=n[t]=n[t]||[],r=function(i){o[i]=o[i]||function(){for(var n=[],t=0;t<arguments.length;t++)n[t]=arguments[t];return o.push([i,n])}},a=0,u=["init","user","account","organization","track","nps"];a<u.length;a++){r(u[a])}}(window,"Vitally");
+    Vitally.init(CONFIG.VITALLY_API_KEY, 'https://sa-integrations-demo.api.vitally.io/analytics/v1');
+  </script>
+
+  <style>
+    [hidden] { display: none !important; }
+    .stack { display: grid; gap: 12px; max-width: 720px; }
+    .row { display: grid; grid-template-columns: 160px 1fr; gap: 8px; align-items: center; }
+    input, button { padding: 10px; }
+    .btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
+    #result { margin-top: 12px; white-space: pre-wrap; }
+    section.card { background: #fafafa; border: 1px solid #eee; padding: 16px; border-radius: 10px; max-width: 720px; margin-top: 1.5rem; }
+    section.card h2 { margin-bottom: 12px; }
+    .hierarchy-toggle { display: flex; align-items: center; gap: 10px; max-width: 720px; margin-top: 1.5rem; }
+    .hierarchy-toggle input { padding: 0; width: auto; }
+    .traits { display: grid; gap: 8px; }
+    .trait-row { display: grid; grid-template-columns: 1fr 1fr auto; gap: 8px; align-items: center; }
+    .trait-row button { padding: 6px 10px; }
+    .add-trait-btn { justify-self: start; }
+    small.hint { opacity: 0.65; }
+  </style>
+</head>
+<body>
+  <!-- Navigation -->
+  <nav>
+    <ul>
+      <li><a href="index.html">Home</a></li>
+      <li><a href="mixpanel.html">Mixpanel</a></li>
+      <li><a href="segment.html">Segment</a></li>
+      <li><a href="analyticsapi.html">Analytics API</a></li>
+      <li><a href="amplitude.html">Amplitude</a></li>
+      <li class="logo"><img src="vital_logo.png" alt="Vital logo" /></li>
+    </ul>
+  </nav>
+
+  <h1>Vitally Analytics API Playground</h1>
+
+  <div class="hierarchy-toggle">
+    <input id="hierarchy-toggle" type="checkbox" />
+    <label for="hierarchy-toggle">Enable Account Hierarchy (Organizations)</label>
+  </div>
+
+  <!-- Organization -->
+  <section id="org-section" class="card" hidden>
+    <h2>Organization</h2>
+    <div class="stack">
+      <div class="row">
+        <label for="org-id">Organization ID</label>
+        <input id="org-id" type="text" placeholder="e.g. org_123" />
+      </div>
+      <div class="row">
+        <label for="org-name">Name</label>
+        <input id="org-name" type="text" placeholder="e.g. Pied Piper Global" />
+      </div>
+
+      <div class="traits" id="org-traits"></div>
+      <button type="button" class="add-trait-btn" data-add-trait="org-traits">+ Add Trait</button>
+
+      <div class="btns">
+        <button id="btn-org" type="button">Send Organization</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Account -->
+  <section class="card">
+    <h2>Account</h2>
+    <div class="stack">
+      <div class="row">
+        <label for="account-id">Account ID</label>
+        <input id="account-id" type="text" placeholder="e.g. acct_123" />
+      </div>
+      <div class="row">
+        <label for="account-name">Name</label>
+        <input id="account-name" type="text" placeholder="e.g. Pied Piper" />
+      </div>
+      <div class="row" id="account-org-row" hidden>
+        <label for="account-org-id">Organization ID</label>
+        <input id="account-org-id" type="text" placeholder="e.g. org_123" />
+      </div>
+
+      <div class="traits" id="account-traits"></div>
+      <button type="button" class="add-trait-btn" data-add-trait="account-traits">+ Add Trait</button>
+
+      <div class="btns">
+        <button id="btn-account" type="button">Send Account</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- User -->
+  <section class="card">
+    <h2>User</h2>
+    <div class="stack">
+      <div class="row">
+        <label for="user-id">User ID</label>
+        <input id="user-id" type="text" placeholder="e.g. user_456" />
+      </div>
+      <div class="row">
+        <label for="user-account-id">Account ID</label>
+        <input id="user-account-id" type="text" placeholder="e.g. acct_123" />
+      </div>
+      <div class="row" id="user-org-row" hidden>
+        <label for="user-org-id">Organization ID</label>
+        <input id="user-org-id" type="text" placeholder="e.g. org_123" />
+      </div>
+      <div class="row">
+        <label for="user-name">Name <small class="hint">(optional)</small></label>
+        <input id="user-name" type="text" placeholder="e.g. Richard Hendricks" />
+      </div>
+      <div class="row">
+        <label for="user-email">Email <small class="hint">(optional)</small></label>
+        <input id="user-email" type="email" placeholder="e.g. richard@piedpiper.com" />
+      </div>
+
+      <div class="traits" id="user-traits"></div>
+      <button type="button" class="add-trait-btn" data-add-trait="user-traits">+ Add Trait</button>
+
+      <div class="btns">
+        <button id="btn-user" type="button">Send User</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- Track -->
+  <section class="card">
+    <h2>Track</h2>
+    <div class="stack">
+      <div class="row">
+        <label for="track-event">Event Name</label>
+        <input id="track-event" type="text" placeholder="Analytics Event" />
+      </div>
+      <div class="row">
+        <label for="track-user-id">User ID</label>
+        <input id="track-user-id" type="text" placeholder="e.g. user_456" />
+      </div>
+
+      <div class="traits" id="track-props"></div>
+      <button type="button" class="add-trait-btn" data-add-trait="track-props">+ Add Property</button>
+
+      <div class="btns">
+        <button id="btn-track" type="button">Send Track</button>
+      </div>
+    </div>
+  </section>
+
+  <pre id="result"></pre>
+
+  <script>
+    const $ = (id) => document.getElementById(id);
+    const out = (msg, obj) => {
+      const stamp = new Date().toISOString();
+      const details = obj ? "\n" + JSON.stringify(obj, null, 2) : "";
+      $("result").textContent = `[${stamp}] ${msg}${details}`;
+    };
+
+    function safeCall(label, fn) {
+      try { fn && fn(); }
+      catch (e) { out(`❌ ${label} error`, { error: String(e) }); }
+    }
+
+    // --- Trait / property key-value rows ---
+    function addTraitRow(containerId) {
+      const container = $(containerId);
+      const row = document.createElement("div");
+      row.className = "trait-row";
+      row.innerHTML = `
+        <input type="text" placeholder="key" class="trait-key" />
+        <input type="text" placeholder="value" class="trait-value" />
+        <button type="button" title="Remove">×</button>
+      `;
+      row.querySelector("button").onclick = () => row.remove();
+      container.appendChild(row);
+    }
+
+    document.querySelectorAll("[data-add-trait]").forEach((btn) => {
+      btn.onclick = () => addTraitRow(btn.getAttribute("data-add-trait"));
+    });
+
+    function collectTraits(containerId) {
+      const rows = $(containerId).querySelectorAll(".trait-row");
+      const traits = {};
+      rows.forEach((row) => {
+        const key = row.querySelector(".trait-key").value.trim();
+        const value = row.querySelector(".trait-value").value.trim();
+        if (key) traits[key] = value;
+      });
+      return traits;
+    }
+
+    // --- Hierarchy toggle ---
+    const hierarchyToggle = $("hierarchy-toggle");
+    function applyHierarchyVisibility() {
+      const on = hierarchyToggle.checked;
+      $("org-section").hidden = !on;
+      $("account-org-row").hidden = !on;
+      $("user-org-row").hidden = !on;
+    }
+    hierarchyToggle.onchange = applyHierarchyVisibility;
+    applyHierarchyVisibility();
+
+    // --- ID cascade: upstream field's value flows into untouched downstream fields ---
+    function cascade(sourceId, targetIds) {
+      const source = $(sourceId);
+      const targets = targetIds.map((id) => $(id));
+      const touched = new Map(targets.map((el) => [el, false]));
+
+      targets.forEach((el) => {
+        el.addEventListener("input", () => {
+          if (el.dataset.syncing === "1") return; // change came from cascade itself
+          touched.set(el, true);
+        });
+      });
+
+      source.addEventListener("input", () => {
+        targets.forEach((el) => {
+          if (touched.get(el)) return;
+          el.dataset.syncing = "1";
+          el.value = source.value;
+          el.dataset.syncing = "0";
+        });
+      });
+    }
+
+    cascade("org-id", ["account-org-id", "user-org-id"]);
+    cascade("account-id", ["user-account-id"]);
+    cascade("user-id", ["track-user-id"]);
+
+    // --- Organization ---
+    $("btn-org").onclick = function () {
+      const organizationId = $("org-id").value.trim();
+      const name = $("org-name").value.trim();
+      if (!organizationId || !name) { out("⚠️ Organization ID and Name are required — not sending Vitally.organization"); return; }
+      const traits = { name, ...collectTraits("org-traits") };
+      safeCall("Vitally.organization", () => Vitally.organization({ organizationId, traits }));
+      out("✅ Sent Vitally.organization", { organizationId, traits });
+    };
+
+    // --- Account ---
+    $("btn-account").onclick = function () {
+      const accountId = $("account-id").value.trim();
+      const name = $("account-name").value.trim();
+      if (!accountId || !name) { out("⚠️ Account ID and Name are required — not sending Vitally.account"); return; }
+      const payload = { accountId, traits: { name, ...collectTraits("account-traits") } };
+      if (hierarchyToggle.checked) {
+        const organizationId = $("account-org-id").value.trim();
+        if (organizationId) payload.organizationId = organizationId;
+      }
+      safeCall("Vitally.account", () => Vitally.account(payload));
+      out("✅ Sent Vitally.account", payload);
+    };
+
+    // --- User ---
+    $("btn-user").onclick = function () {
+      const userId = $("user-id").value.trim();
+      const accountId = $("user-account-id").value.trim();
+      if (!userId || !accountId) { out("⚠️ User ID and Account ID are required — not sending Vitally.user"); return; }
+      const name = $("user-name").value.trim();
+      const email = $("user-email").value.trim();
+      const traits = collectTraits("user-traits");
+      if (name) traits.name = name;
+      if (email) traits.email = email;
+      const payload = { userId, accountId, traits };
+      if (hierarchyToggle.checked) {
+        const organizationId = $("user-org-id").value.trim();
+        if (organizationId) payload.organizationId = organizationId;
+      }
+      safeCall("Vitally.user", () => Vitally.user(payload));
+      out("✅ Sent Vitally.user", payload);
+    };
+
+    // --- Track ---
+    $("btn-track").onclick = function () {
+      const userId = $("track-user-id").value.trim();
+      if (!userId) { out("⚠️ User ID is required — not sending Vitally.track"); return; }
+      const event = $("track-event").value.trim() || "Analytics Event";
+      const properties = { source: "analytics.html", ...collectTraits("track-props") };
+      const payload = { event, userId, properties };
+      safeCall("Vitally.track", () => Vitally.track(payload));
+      out("✅ Sent Vitally.track", payload);
+    };
+  </script>
+</body>
+</html>
