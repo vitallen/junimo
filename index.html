@@ -175,16 +175,20 @@
       analytics.identify(userId, {
       name: name,
       email: email,
-      accountId: accountExternalId
+      accountId: accountExternalId,
+      updatedBySource: "index.html",
+      updatedAt: new Date().toISOString()
       });
 
       // Segment Group Call
       analytics.group(accountExternalId, {
       name: accountName,
-      industry: "Technology",
-      employees: 329,
-      plan: "enterprise",
-      "total billed": 830
+      updatedBySource: "index.html",
+      updatedAt: new Date().toISOString()
+      //industry: "Technology",
+      //employees: 329,
+      //plan: "enterprise",
+      //"total billed": 830
       });
 
       // Segment Track Call
@@ -201,14 +205,18 @@
         $name: name,
         $email: email,
         $accountName: accountName,
-        "Signup Date": new Date().toISOString()
+        "Signup Date": new Date().toISOString(),
+        updatedBySource: "index.html",
+        updatedAt: new Date().toISOString()
       });
 
       // Vitally Identify + NPS
       Vitally.account({
         accountId: accountExternalId,
         traits: {
-          name: accountName
+          name: accountName,
+          updatedBySource: "index.html",
+          updatedAt: new Date().toISOString()
         },
       });
 
@@ -217,7 +225,9 @@
         accountId: accountExternalId,
         traits: {
           name,
-          email //,
+          email,
+          updatedBySource: "index.html",
+          updatedAt: new Date().toISOString()
           // any extra traits you want
         },
       });
