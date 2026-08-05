@@ -30,13 +30,14 @@
   </script>
 
   <style>
+    section.card { background: #fafafa; border: 1px solid #eee; padding: 16px; border-radius: 10px; max-width: 720px; margin-top: 1.5rem; margin-left: 20px; }
     .stack { display: grid; gap: 12px; max-width: 720px; }
     .row { display: grid; grid-template-columns: 160px 1fr; gap: 8px; align-items: center; }
     input, button { padding: 10px; }
     .btns { display: flex; flex-wrap: wrap; gap: 8px; align-items: center; }
-    #result { margin-top: 12px; }
+    #result { margin-top: 12px; margin-left: 20px; }
     /* Click order UI */
-    .order-wrap { background: #fafafa; border: 1px solid #eee; padding: 12px; border-radius: 10px; }
+    .order-wrap { background: #fafafa; border: 1px solid #eee; padding: 12px; border-radius: 10px; max-width: 720px; margin-top: 12px; margin-left: 20px; }
     .order-list { display: flex; flex-wrap: wrap; gap: 8px; }
     .pill { border: 1px solid #ddd; border-radius: 999px; padding: 6px 10px; font-size: 0.9rem; }
     .pill small { opacity: 0.65; margin-right: 6px; }
@@ -55,9 +56,9 @@
     </ul>
   </nav>
 
-  <h1>Segment Playground</h1>
+  <h1>Vitally Segment Playground</h1>
 
-  <main class="form" style="margin-top: 1.5rem;">
+  <section class="card">
     <div class="stack">
       <div class="row">
         <label for="account-id">Account ID</label>
@@ -78,16 +79,16 @@
         <button id="btn-track" type="button">Track</button>
         <button id="btn-refresh" type="button" title="Clear click order indicator">Refresh</button>
       </div>
-
-      <!-- Click order indicator -->
-      <div class="order-wrap">
-        <strong>Click order (most recent session)</strong>
-        <div id="click-order" class="order-list" aria-live="polite"></div>
-      </div>
-
-      <pre id="result"></pre>
     </div>
-  </main>
+  </section>
+
+  <!-- Click order indicator -->
+  <div class="order-wrap">
+    <strong>Click order (most recent session)</strong>
+    <div id="click-order" class="order-list" aria-live="polite"></div>
+  </div>
+
+  <pre id="result"></pre>
 
   <script>
     const $ = (id) => document.getElementById(id);

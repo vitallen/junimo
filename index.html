@@ -6,6 +6,9 @@
   <title>Mixpanel SDK Local Test</title>
   <link rel="stylesheet" href="style.css">
   <link rel=""stylesheet href="https://fonts.googleapis.com">
+  <style>
+    section.card { background: #fafafa; border: 1px solid #eee; padding: 16px; border-radius: 10px; max-width: 720px; margin-top: 1.5rem; margin-left: 20px; }
+  </style>
   <!-- Segment -->
    <script src="./config.js"></script>
    <script>
@@ -31,12 +34,12 @@
     </ul>
   </nav>
   <br>
-  <h1>Welcome to your Vital Playground</h1>
+  <h1>Vitally Home Playground</h1>
 
   <div id="status">⏳ Waiting to track event...</div>
 
   <!-- Identify form -->
-  <div class="form" style="margin-top: 2rem;">
+  <section class="card">
     <input
       type="text"
       id="user-id"
@@ -70,10 +73,7 @@
     <button onclick="identifyUser()" style="padding: 0.5rem 1rem;">Sign Up</button>
 
     <div id="identify-status" style="margin-top: 1rem;"></div>
-  </div>
-    
-
-   
+  </section>
 
   <!-- Mixpanel init + tracking -->
 
