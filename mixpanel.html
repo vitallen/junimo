@@ -162,7 +162,7 @@
       const traits = collectTraits("identify-traits");
       if (name) traits.$name = name;
       if (email) traits.$email = email;
-      if (accountId) traits.accountId = accountId;
+      if (accountId) traits.$accountId = accountId;
       if (accountName) traits.$accountName = accountName;
 
       safeCall("mixpanel.identify", () => mixpanel.identify(userId));
