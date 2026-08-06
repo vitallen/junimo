@@ -205,9 +205,17 @@
         $name: name,
         $email: email,
         $accountName: accountName,
+        $accountId: accountExternalId,
         "Signup Date": new Date().toISOString(),
         updatedBySource: "index.html",
         updatedAt: new Date().toISOString()
+      });
+
+      // Mixpanel Event
+      mixpanel.track("Mixpanel Event", {
+        name: name,
+        accountId: accountExternalId,
+        source: "index.html",
       });
 
       // Vitally Identify + NPS
