@@ -232,6 +232,16 @@
         },
       });
 
+      // Vitally Track
+      Vitally.track({
+        event: "Sign Up",
+        userId: userId,
+        properties: {
+          accountId: accountExternalId,
+          source: "index.html",
+        },
+      });
+
       // Show NPS ONLY after the click / identification
       Vitally.nps("show", {
         productName: "Vital",
